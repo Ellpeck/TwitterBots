@@ -19,12 +19,15 @@ function doTheMath() {
             res = firstNum * secondNum;
             res += Math.floor(Math.random() * 80) - 40;
             sign = "*";
+            break;
         case 1:
             res = firstNum + secondNum;
             sign = "+";
+            break;
         case 2:
             res = firstNum - secondNum;
             sign = "-";
+            break;
     }
     let correct = res;
     while (res == correct)
