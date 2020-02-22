@@ -1,8 +1,8 @@
-var Twit = require("twit");
-var fs = require("fs");
+const Twit = require("twit");
+const fs = require("fs");
 
-var config = fs.readFileSync(__dirname + "/_config.json");
-var twit = new Twit(JSON.parse(config));
+const config = fs.readFileSync(__dirname + "/_config.json");
+const twit = new Twit(JSON.parse(config));
 
 doTheMath();
 // every two hours

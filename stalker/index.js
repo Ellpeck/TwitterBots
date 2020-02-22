@@ -12,6 +12,9 @@ let stream = twit.stream('statuses/filter', {
     track: ['@StalkerBoter']
 });
 stream.on("tweet", function (tweet) {
+    // Ignore replies
+    if (tweet.in_reply_to_status_id_str)
+        return;
     console.log(`Received tweet from ${tweet.user.screen_name}: "${tweet.text}"`);
     sendWordList(tweet.user, tweet);
 });
@@ -21,8 +24,13 @@ function sendWordList(user, tweet) {
         user_id: user.id_str,
         exclude_replies: false,
         include_rts: false,
-        count: tweets // max for free Twitter API
-    }, function (_err, data, _response) {
+        count: tweets
+    }, function (err, data, _response) {
+        if (err) {
+            console.error(err);
+            return;
+        }
+
         let counts = compileWordCounts(data);
         let highest = getHighestWordCounts(counts);
 
@@ -33,11 +41,15 @@ function sendWordList(user, tweet) {
                 word = `<at>${word.substring(1)}`;
             status += `${amount}x ${word}\n`;
         }
+
+        console.log(`Replying with "${status}"`);
         twit.post("statuses/update", {
             status: status,
             in_reply_to_status_id: tweet.id_str
-        }, function (_err, _data, _response) {});
-        console.log(`Replying with "${status}"`);
+        }, function (err, _data, _response) {
+            if (err)
+                console.error(err);
+        });
     });
 }
 
