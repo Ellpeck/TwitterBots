@@ -37,8 +37,7 @@ function sendWordList(user, tweet) {
         let status = `@${user.screen_name} Here are your ${words} most used words from the last ${tweets} tweets:\n`;
         for (let word of highest) {
             let amount = counts.get(word);
-            if (word.startsWith("@"))
-                word = `<at>${word.substring(1)}`;
+            word = word.replace("@", ""); // remove @mentions
             status += `${amount}x ${word}\n`;
         }
 
@@ -57,6 +56,7 @@ function compileWordCounts(tweets) {
     let wordCounts = new Map();
     for (let tweet of tweets) {
         for (let word of tweet.text.split(/[ |\n]/)) {
+            word = word.toLowerCase(); // ignore casing entirely
             let curr = wordCounts.get(word);
             if (!curr)
                 curr = 0;
